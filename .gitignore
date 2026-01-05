@@ -1,0 +1,19 @@
+# Python Çöpleri
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# Veri Setleri
+datasets/
+
+# Deney Sonuçları
+runs/
+
+# Model Ağırlıkları
+*.pt
+*.onnx
+
+# IDE Ayarları
+.vscode/
+.idea/
