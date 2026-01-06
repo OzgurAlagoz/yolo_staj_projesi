@@ -14,7 +14,7 @@ class BenchmarkLogger:
             with open(self.file_path, mode='w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(["Tarih", "Model", "Cihaz", "mAP50-95", "mAP50", "FPS", "Latency(ms)"])
-            print(f"[LOG] Yeni log dosyasi oluşturuldu: {self.file_path}")
+            print(f"[LOG] Yeni log dosyasi olusturuldu: {self.file_path}")
 
     def log_result(self, model_name, device, metrics, fps, latency):
 
@@ -27,4 +27,4 @@ class BenchmarkLogger:
             writer = csv.writer(f)
             writer.writerow([now, model_name, device, map50_95, map50, fps, latency])
             
-        print(f"[LOG] Sonuçlar kaydedildi -> {model_name}")
+        print(f"[LOG] Sonuclar kaydedildi -> {model_name}")

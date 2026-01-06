@@ -1,19 +1,25 @@
+# .gitignore dosyasının içi şöyle olmalı:
+
+# Sanal Ortam
+.venv/
+venv/
+
 # Python Çöpleri
 __pycache__/
-*.py[cod]
-.venv/
-.env
+*.pyc
 
 # Veri Setleri
 datasets/
 
-# Deney Sonuçları
+# Tüm runs klasörünü yoksay
 runs/
 
-# Model Ağırlıkları
+# İndirilen Ağır Modeller (Bunları yükleme!)
 *.pt
 *.onnx
 
-# IDE Ayarları
-.vscode/
-.idea/
+# Geçici Config Dosyaları
+*_temp.yaml
+
+# Sistem Dosyaları
+.DS_Store
