@@ -50,7 +50,7 @@ def run_benchmark():
         device = 'cpu'
         device_name = 'CPU'
     
-    print(f"💻 Kullanılan Cihaz: {device} ({device_name})")
+    print(f"Kullanilan Cihaz: {device} ({device_name})")
 
     for model_name in config['models']:
         print(f"\nSiradaki Model: {model_name}")
