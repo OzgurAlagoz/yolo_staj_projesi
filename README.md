@@ -12,7 +12,7 @@ Proje dosyaları aşağıdaki düzendedir:
 * datasets/: Veri setlerinin indirildiği klasör. (Git deposuna dahil edilmez, script ile oluşturulur).
     * coco/: Eğitim ve test resimleri ile YOLO formatındaki etiket dosyaları.
     * mot/: Tracking testleri için kullanılan video dosyaları.
-* scripts/: Veri indirme, format dönüştürme ve benchmark testleri için kullanılan Python scriptleri.
+* scripts/: Veri indirme, format dönüştürme, benchmark ve tracking için kullanılan Python scriptleri.
 * src/: Projenin ana kaynak kodları (Loglama araçları vb.).
 * runs/: Deney sonuçlarının (CSV) ve çıktıların kaydedildiği klasör.
 
@@ -46,7 +46,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 ## Kullanım
 
 ### 1. Veri Hazırlığı
-Verileri (COCO resimleri ve MOT videoları) otomatik olarak indirmek ve YOLO formatına hazırlamak için:
+Verileri (COCO resimleri) otomatik olarak indirmek ve YOLO formatına hazırlamak için:
 
 python scripts/prepare_data.py
 
@@ -55,7 +55,12 @@ YOLOv8n, YOLOv5su ve YOLOv9c modellerini sırasıyla çalıştırıp hız (FPS) 
 
 python scripts/benchmark.py
 
-*Not: Script, bilgisayarınızdaki donanımı (CPU/GPU) otomatik algılar ve sonuçları `runs/results.csv` dosyasına kaydeder.*
+### 3. Tracking Demo (Nesne Takibi)
+YOLOv8n ve ByteTrack algoritmasını kullanarak örnek bir video üzerinde takip işlemini görmek için:
+
+python scripts/track_demo.py
+
+*Not: Demo sonucu `runs/demo` klasörüne video dosyası olarak kaydedilir.*
 
 ## Deney Sonuçları (Gerçek Veriler)
 
@@ -63,9 +68,9 @@ Aşağıdaki sonuçlar **NVIDIA GeForce GTX 1660 SUPER** donanımı üzerinde, 5
 
 | Model | Boyut | Hız (Inference Time) | Başarı (mAP50) | Yorum |
 | :--- | :--- | :--- | :--- | :--- |
-| **YOLOv8n** | Nano | **~3.2 ms** (312 FPS) | 0.135 | En hızlı model. Gerçek zamanlı uygulamalar için ideal. |
+| **YOLOv8n** | Nano | **~3.2 ms** (312 FPS) | 0.135 | En hızlı model. Gerçek zamanlı tracking için seçilmiştir. |
 | **YOLOv5su** | Small | ~5.8 ms (172 FPS) | 0.136 | v8n ile benzer doğrulukta, ancak biraz daha yavaş. |
-| **YOLOv9c** | Compact | ~53.6 ms (18 FPS) | **0.163** | En yüksek doğruluk (+%20 fark). Karmaşık sahnelerde daha yetenekli. |
+| **YOLOv9c** | Compact | ~53.6 ms (18 FPS) | **0.163** | En yüksek doğruluk (+%20 fark). Hız gerekmeyen analizler için uygundur. |
 
 *Detaylı metrikler için `runs/results.csv` dosyasına bakabilirsiniz.*
 
@@ -77,11 +82,11 @@ Test parametreleri 'configs/benchmark.yaml' dosyasında tanımlanmıştır. Mode
 
 * [x] **Gün 1:** Kurulum, repo yapısının oluşturulması ve veri hazırlığı (Tamamlandı).
 * [x] **Gün 2:** CUDA/GPU entegrasyonu ve Benchmark testlerinin yapılması (Tamamlandı).
-* [ ] **Gün 3:** Sonuçların grafikleştirilmesi ve detaylı analizi.
-* [ ] **Gün 4:** Nesne takibi (Object Tracking) senaryolarının uygulanması.
+* [x] **Gün 3:** En uygun modelin seçimi (YOLOv8n) ve Tracking demosu (Tamamlandı).
+* [ ] **Gün 4:** Nesne takibi (Object Tracking) senaryolarının MOT verisiyle uygulanması.
 * [ ] **Gün 5:** API geliştirme ve Canlı test.
 
 ## Notlar
 
 * `datasets/` klasörü boyutları nedeniyle Git'e yüklenmemiştir. Scriptler ile yerel olarak oluşturulur.
-* `runs/` klasöründe sadece `results.csv` dosyası versiyon kontrolüne alınmıştır; model dosyaları ve geçici çıktılar yoksayılmıştır.
+* `runs/` klasöründe sadece `results.csv` dosyası versiyon kontrolüne alınmıştır.
