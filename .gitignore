@@ -1,5 +1,3 @@
-# .gitignore dosyasının içi şöyle olmalı:
-
 # Sanal Ortam
 .venv/
 venv/
@@ -22,4 +20,12 @@ runs/
 *_temp.yaml
 
 # Sistem Dosyaları
+.DS_Store
+
+*.mp4
+*.avi
+*.jpg
+*.png
+
+# Sistem dosyalari
 .DS_Store
