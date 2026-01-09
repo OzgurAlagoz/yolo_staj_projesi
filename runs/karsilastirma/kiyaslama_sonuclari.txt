@@ -1,0 +1,2 @@
+Tracker: ByteTrack | FPS: 35.68 | Tarih: Fri Jan  9 18:38:34 2026
+Tracker: DeepSORT  | FPS: 39.83 | Tarih: Fri Jan  9 18:39:06 2026

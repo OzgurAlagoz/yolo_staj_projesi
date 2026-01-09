@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import os
 from deep_sort_realtime.deepsort_tracker import DeepSort
 import cv2
+import time
 
 tracker = DeepSort(max_age=30)
 model = YOLO("yolov8n.pt")
@@ -12,12 +13,21 @@ w_frame = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 h_frame = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = cap.get(cv2.CAP_PROP_FPS)
 
-output_video_path = "demo_output.mp4"
+project_root = "runs"
+sub_folder = "karsilastirma"
+output_dir = os.path.join(project_root, sub_folder)
+os.makedirs(output_dir, exist_ok=True)
+
+video_output_path = os.path.join(output_dir, "track_deep_demo.mp4")
+txt_output_path = os.path.join(output_dir, "kiyaslama_sonuclari.txt")
+
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_video_path, fourcc, fps, (w_frame, h_frame))
+out = cv2.VideoWriter(video_output_path, fourcc, fps, (w_frame, h_frame))
 
 results_file = open("results.txt", "w")
 frame_count = 0
+
+baslangic_zamani = time.time()
 
 while True:
     ret, frame = cap.read()
@@ -71,8 +81,14 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+bitis_zamani = time.time()
 results_file.close()
 cap.release()
 out.release()
 cv2.destroyAllWindows()
 
+fps_degeri = frame_count / (bitis_zamani- baslangic_zamani)
+print(f"FPS: {fps_degeri}")
+
+with open(txt_output_path, "a") as f:
+    f.write(f"Tracker: DeepSORT  | FPS: {fps_degeri:.2f} | Tarih: {time.ctime()}\n")

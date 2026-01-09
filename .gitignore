@@ -1,31 +1,28 @@
-# Sanal Ortam
-.venv/
-venv/
-
-# Python Çöpleri
+# --- PYTHON COPLERI ---
 __pycache__/
 *.pyc
 
-# Veri Setleri
+# --- SANAL ORTAM (Cok Onemli: Asla yukleme) ---
+venv/
+.venv/
+env/
+
+# --- BUYUK MEDYA DOSYALARI ---
+# Videolari yukleme, GitHub'i tikar.
 datasets/
+*.mp4
+*.avi
+*.mov
 
-# Tüm runs klasörünü yoksay
-runs/
-
-# İndirilen Ağır Modeller (Bunları yükleme!)
+# --- MODEL DOSYALARI ---
+# Modeller kod calisinca otomatik iner.
 *.pt
 *.onnx
 
-# Geçici Config Dosyaları
-*_temp.yaml
+# --- IDE AYARLARI ---
+.vscode/
+.idea/
 
-# Sistem Dosyaları
+# --- GENEL ---
 .DS_Store
 
-*.mp4
-*.avi
-*.jpg
-*.png
-
-# Sistem dosyalari
-.DS_Store
