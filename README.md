@@ -1,45 +1,41 @@
 # YOLO Nesne Tespiti ve Takibi Projesi
 
-Bu proje, YOLOv8, YOLOv5 ve YOLOv9 modellerinin performanslarını karşılaştırmak (benchmark) ve gelişmiş nesne takibi (object tracking) yeteneklerini test etmek amacıyla geliştirilmiştir.
+Bu proje, YOLOv8 modelini temel alarak gelişmiş nesne takibi (object tracking) yeteneklerini test etmek ve kıyaslamak amacıyla geliştirilmiştir.
 
-Proje kapsamında COCO veri setinin "Person" (İnsan) alt kümesi ve MOT17 örnek videoları kullanılarak modellerin hızı ve doğruluğu analiz edilmektedir. Ayrıca **DeepSORT** ve **ByteTrack** algoritmaları entegre edilerek, "Görsel Hafıza (ReID)" ile "Hareket Bazlı (Kalman+IoU)" takip yöntemleri hız ve istikrar açısından kıyaslanmıştır.
+Proje kapsamında COCO veri setinin "Person" (İnsan) alt kümesi ve **MOT17** ile diğer örnek videolar kullanılarak **DeepSORT** ve **ByteTrack** algoritmaları entegre edilmiştir. Bu sayede "Görsel Hafıza (ReID)" ile "Hareket Bazlı (Kalman+IoU)" takip yöntemleri, farklı zorluk seviyelerindeki 4 farklı video senaryosunda (okul, mağaza, kalabalık cadde vb.) hız ve istikrar açısından karşılaştırılmaktadır.
 
 ## Proje Yapısı
 
 Proje dosyaları aşağıdaki düzendedir:
 
 * `configs/`: Benchmark ve model parametrelerinin bulunduğu ayar dosyaları (YAML).
-* `datasets/`: Veri setlerinin indirildiği klasör. (Git deposuna dahil edilmez).
-* `scripts/`: Veri indirme, format dönüştürme ve benchmark testleri için kullanılan scriptler.
-* `src/`: Projenin ana kaynak kodları.
-    * `tracker_deep.py`: **DeepSORT** algoritması ile takip ve MOT kaydı yapan modül.
-    * `tracker_byte.py`: **ByteTrack** algoritması ile yüksek hızlı takip yapan modül.
+* `datasets/`: Veri setlerinin bulunduğu klasör. `mot/` klasörü test videolarını içerir.
+* `scripts/`:
+    * `prepare_data.py`: Veri indirme/hazırlama scripti.
+    * `benchmark.py`: YOLO modellerinin hız karşılaştırması.
+* `src/`: Tracker uygulama kodları.
+    * `tracker_deepsort.py`: **DeepSORT** ile 4 MOT videosunu sırayla işleyen ve sonuçları kaydeden script.
+    * `tracker_bytetrack.py`: **ByteTrack** ile 4 MOT videosunu sırayla işleyen ve sonuçları kaydeden script.
 * `runs/`: Deney sonuçlarının kaydedildiği klasör.
-    * `karsilastirma/`: Tracker demolarının (MP4) ve kıyaslama raporunun (TXT) otomatik kaydedildiği yer.
-* `results.txt`: Ham MOT formatındaki çıktı dosyası.
+    * `karsilastirma/`:
+        * `track_byte_*.mp4`: ByteTrack ile oluşturulan takip videoları.
+        * `track_deep_*.mp4`: DeepSORT ile oluşturulan takip videoları.
+        * `kiyaslama_sonuclari.txt`: Her iki tracker'ın FPS değerlerini içeren log dosyası.
 * `requirements.txt`: Proje bağımlılıkları.
 
 ## Kurulum
 
 Projeyi çalıştırmak için aşağıdaki adımları takip edin.
 
-1. **Projeyi Klonlama:**
-   Projeyi bilgisayarınıza indirin ve proje dizinine gidin.
-
-2. **Sanal Ortam Oluşturma:**
+1. **Sanal Ortam Oluşturma:**
 
    ```bash
    # Windows için:
    python -m venv .venv
    .venv\Scripts\activate
-
-   # Linux/Mac için:
-   python3 -m venv .venv
-   source .venv/bin/activate
    ```
 
-3. **Kütüphanelerin Yüklenmesi:**
-   Standart kütüphaneler ve GPU (CUDA) kurulumu için aşağıdaki komutları sırasıyla çalıştırın:
+2. **Kütüphanelerin Yüklenmesi:**
    
    ```bash
    # 1. Gereksinimleri yükle
@@ -53,56 +49,32 @@ Projeyi çalıştırmak için aşağıdaki adımları takip edin.
 
 ## Kullanım
 
-### 1. Veri Hazırlığı
-Verileri indirmek ve YOLO formatına hazırlamak için:
+### 1. Veri Hazırlığı ve Model Benchmark
+Verileri hazırlamak veya YOLO modellerini (v5/v8/v9) hız açısından kıyaslamak için scripts klasöründeki dosyaları kullanabilirsiniz:
 ```bash
 python scripts/prepare_data.py
-```
-
-### 2. Model Benchmark (YOLO Hız Testi)
-Farklı YOLO modellerini kıyaslamak için:
-```bash
 python scripts/benchmark.py
 ```
 
-### 3. Tracker Benchmark (DeepSORT vs ByteTrack)
-İki farklı takip algoritmasını çalıştırmak ve sonuçları `runs/karsilastirma/` klasöründe toplamak için sırasıyla:
+### 2. Tracker Kıyaslama (Otomatik Test)
+Proje, `datasets/mot` klasöründeki 4 videoyu otomatik olarak işleyen iki ana script içerir. Bu scriptler çalıştırıldığında videoları okur, takibi gerçekleştirir, işlenmiş videoları kaydeder ve FPS sonuçlarını raporlar.
 
-**Adım A: DeepSORT Çalıştır (ReID Özellikli)**
+**Adım A: DeepSORT Çalıştır**
 ```bash
-python src/tracker_deep.py
+python src/tracker_deepsort.py
 ```
-*Görsel özellikleri kullandığı için daha yavaştır ancak kalabalıkta kimlikleri daha iyi korur.*
+*Görsel özellikleri (CNN) kullandığı için "Görülmeyen Nesneler (Occlusion)" ve "Kamera Hareketi" durumlarında kimliği daha iyi korur.*
 
-**Adım B: ByteTrack Çalıştır (Hareket Özellikli)**
+**Adım B: ByteTrack Çalıştır**
 ```bash
-python src/tracker_byte.py
+python src/tracker_bytetrack.py
 ```
-*Sadece matematiksel hesaplama yaptığı için çok hızlıdır (High FPS).*
+*Görsel özellik kullanmaz, sadece hareket (Kalman Filter + IoU) analizi yapar. Çok hızlıdır ve "Düşük Güven Skorlu" nesneleri de izleyerek kesintileri önler.*
 
-**Sonuçlar:** İşlem bittiğinde `runs/karsilastirma/kiyaslama_sonuclari.txt` dosyasında her iki yöntemin FPS değerlerini görebilirsiniz.
-
-## Deney Sonuçları
-
-### 1. Model Kıyaslaması (GTX 1660 SUPER)
-
-| Model | Hız (Inference) | Başarı (mAP50) | Yorum |
-| :--- | :--- | :--- | :--- |
-| **YOLOv8n** | **~3.2 ms** (312 FPS) | 0.135 | Gerçek zamanlı takip için seçildi. |
-| **YOLOv5su** | ~5.8 ms (172 FPS) | 0.136 | Benzer doğruluk, daha yavaş. |
-| **YOLOv9c** | ~53.6 ms (18 FPS) | **0.163** | Yüksek doğruluk, düşük hız. |
-
-### 2. Tracker Kıyaslaması (Örnek)
-
-| Algoritma | FPS (Tahmini) | Yöntem | Avantajı |
-| :--- | :--- | :--- | :--- |
-| **DeepSORT** | ~15-20 FPS | Görsel (CNN) + Kalman | Uzun süreli kayıplarda (occlusion) kimliği korur. |
-| **ByteTrack** | ~40-50 FPS | IOU + Kalman | Çok hızlıdır ve düşük skorlu nesneleri de izler. |
-
-## Ayarlar
-
-* **ByteTrack Ayarları:** `configs/custom_bytetrack.yaml` dosyasından eşik değerleri (track_thresh, match_thresh) değiştirilebilir.
-* **Genel Ayarlar:** `configs/benchmark.yaml` dosyasından model seçimi yapılabilir.
+**Sonuçlar:**
+İşlem bittiğinde `runs/karsilastirma/` klasörüne gidin:
+* **Videolar:** `track_byte_*.mp4` ve `track_deep_*.mp4` dosyalarını izleyerek görsel kaliteyi karşılaştırın.
+* **Rapor:** `kiyaslama_sonuclari.txt` dosyasını açarak hangi videoda hangi tracker'ın kaç FPS hızına ulaştığını inceleyin.
 
 ## Proje Durumu
 
@@ -110,9 +82,15 @@ python src/tracker_byte.py
 * [x] **Gün 2:** CUDA/GPU entegrasyonu ve Benchmark testleri.
 * [x] **Gün 3:** En uygun modelin seçimi (YOLOv8n) ve Tracking demosu.
 * [x] **Gün 4:** DeepSORT entegrasyonu ve MOT formatında loglama.
-* [x] **Gün 5:** ByteTrack entegrasyonu, Tracker Kıyaslama Sistemi ve Raporlama.
+* [x] **Gün 5:** ByteTrack entegrasyonu, Failure Case analizleri.
+* [x] **Gün 6:** Çoklu video test otomasyonu ve sonuçların raporlanması.
+* [x] **Gün 7:** Robustness testleri, Failure Case analizi ve Tuning (iyileştirme) çalışmaları.
+
+## Raporlar
+
+* **[Kıyaslama Sonuçları (TXT)](runs/karsilastirma/kiyaslama_sonuclari.txt):** Tüm videoların FPS ve ID sayısı metrikleri.
+* **[Failure Analysis & Tuning Raporu (MD)](reports/failure_analysis_report.md):** Karşılaşılan hatalar (Occlusion, ID Switching) ve çözüm yöntemlerinin detaylı analizi.
 
 ## Notlar
 
-* `runs/` klasörü altındaki video dosyaları `.gitignore` ile engellenmiştir, sadece sayısal sonuçlar (txt/csv) repoya yüklenir.
-* Proje, MOT Challenge standartlarına uygun çıktı üretir.
+* `runs/` klasörü altındaki video dosyaları `.gitignore` ile engellenmiştir, sadece sayısal sonuçlar repoya yüklenir.
