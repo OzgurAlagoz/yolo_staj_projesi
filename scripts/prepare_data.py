@@ -110,9 +110,9 @@ else:
 # ==========================================
 print("5/5 Videolar kontrol ediliyor")
 mot_videos = {
-    "mot17_02_mini.mp4": "https://github.com/intel-iot-devkit/sample-videos/raw/master/people-detection.mp4",
-    "street_crowd.mp4": "https://github.com/ultralytics/assets/releases/download/v0.0.0/benchmarks.mp4",
-    "highway_cctv.mp4": "https://github.com/razorhash/sample-videos/raw/master/highway.mp4"
+    "classroom.mp4": "https://github.com/intel-iot-devkit/sample-videos/raw/master/classroom.mp4",
+    "store-aisle.mp4": "https://github.com/intel-iot-devkit/sample-videos/raw/master/store-aisle-detection.mp4",
+    "walk-pause.mp4": "https://github.com/intel-iot-devkit/sample-videos/raw/master/face-demographics-walking-and-pause.mp4"
 }
 
 for filename, url in mot_videos.items():

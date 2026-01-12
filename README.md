@@ -84,7 +84,7 @@ python src/tracker_bytetrack.py
 * [x] **Gün 4:** DeepSORT entegrasyonu ve MOT formatında loglama.
 * [x] **Gün 5:** ByteTrack entegrasyonu, Failure Case analizleri.
 * [x] **Gün 6:** Çoklu video test otomasyonu ve sonuçların raporlanması.
-* [x] **Gün 7:** Robustness testleri, Failure Case analizi ve Tuning (iyileştirme) çalışmaları.
+* [x] **Gün 7:** Failure Case analizi ve Tuning (iyileştirme) çalışmaları.
 
 ## Raporlar
 
